@@ -1,0 +1,62 @@
+<html>
+<head>
+<meta charset="utf-8">
+<script src="jquery-1.7.1.min.js"></script>
+<script>
+var formid = "s3-a0020";
+var formtxt = "*Nome, *CPF, Endereço, Complemento, Cidade, Estado, CEP, País, *E-mail, Skype, *Telefone, *Celular, Data de nascimento";
+var formupload = "Carta de intenção, Mini-biografia";
+
+
+function toVarName(s){
+  return s.toLowerCase()
+          .replace(/\*/ig,     '')
+          .replace(/[ -]/ig,  '_')
+          .replace(/[áãâ]/ig, 'a')
+          .replace(/[éê]/ig,  'e')
+          .replace(/[óõô]/ig, 'o')
+          .replace(/ç/ig,     'c')
+          .replace(/í/ig,     'i');
+}
+
+function generateFieldHTML(formid, field, type){
+  var is_required = field.charAt(0) == '*';
+  var field_name = toVarName(field);
+  var id = formid+'_'+field_name;
+  var classname = is_required ? 'class="required"' : '';
+  if (is_required) { field = field.substring(1, field.length);}
+  return  '  <label for="'+id+'">'+field+"</label>\n" +
+          '  <input type="'+type+'" name="'+field_name+'" id="'+id+'" '+classname+' />'+"\n";
+}
+
+function generateForm(formid, formtxt, formupload){
+  var standard_fields = formtxt.split(', ');
+  var extra_fields = formupload.split(', ');
+  var form_html = '<form enctype="multipart/form-data" action="submit_form.php" method="POST">'+"\n";
+  form_html +=    '  <input type="hidden" name="MAX_FILE_SIZE" value="30000" />'+"\n";
+  form_html +=    '  <input type="hidden" name="form_id" value="'+formid+'" />'+"\n";
+  $.each(standard_fields, function(index, field){
+    form_html += generateFieldHTML(formid, field, 'text');
+  });
+  $.each(extra_fields, function(index, field){
+    form_html += generateFieldHTML(formid, field, 'file');
+  });
+  form_html +=    '  <input type="submit" value="Enviar" />'
+  form_html +=    '</form>'
+  return form_html;
+}
+
+$(document).ready(function(){
+  var form_html = generateForm(formid, formtxt, formupload);
+  $('#form_container_1').html(form_html);
+}
+
+);
+</script>
+
+</head>
+<body>
+  <div id="form_container_1"></div>
+</body>
+</html>
+
