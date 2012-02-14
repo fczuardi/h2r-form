@@ -31,9 +31,10 @@ function generateFieldHTML(formid, field, type){
 
 function generateForm(formid, formtxt, formupload){
   var standard_fields = formtxt.split(', ');
-  var extra_fields = formupload.split(', ');
+  if (formupload){
+    var extra_fields = formupload.split(', ');
+  }
   var form_html = '<form enctype="multipart/form-data" action="submit_form.php" method="POST">'+"\n";
-  form_html +=    '  <input type="hidden" name="MAX_FILE_SIZE" value="30000" />'+"\n";
   form_html +=    '  <input type="hidden" name="form_id" value="'+formid+'" />'+"\n";
   $.each(standard_fields, function(index, field){
     form_html += generateFieldHTML(formid, field, 'text');
