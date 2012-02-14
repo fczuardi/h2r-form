@@ -19,14 +19,24 @@ if ($_POST){
         die('Failed to create folders...');
     }
   }
-  $formfile = $uploaddir . '/form.txt';
+  $formfile = $uploaddir . '/form.json';
   file_put_contents($formfile, json_encode($_POST));
+  $formfile = $uploaddir . '/dados.txt';
+  $dados = "";
+  $longest_key = 0;
+  foreach($_POST as $key => $value){ $longest_key = max(strlen($key), $longest_key); }
+  foreach($_POST as $key => $value){
+    $space = "";
+    for ($i = 0; $i< $longest_key - strlen($key); $i++){ $space .= ' ';}
+    $dados .= "$key:$space $value\n";
+  }
+  file_put_contents($formfile, $dados);
   if ($_FILES){
     // echo ('<br><br>FILES<br>');
     // var_dump($_FILES);
     foreach($_FILES as $fieldname => $value){
       if ($value["error"] > 0){
-        die("Error: " . $value["error"] . "<br />");
+        // echo ("Error: " . $value["error"] . "<br />");
       }    
       // var_dump($fieldname);
       // echo '<br><br>';
@@ -46,7 +56,7 @@ if ($_POST){
             die("Possible file upload attack!\n");
         }
       } else{
-        die("Missing file: $fieldname");
+        // echo("Missing file: $fieldname");
       }
     }
   }
