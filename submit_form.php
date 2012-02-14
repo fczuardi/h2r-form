@@ -50,6 +50,9 @@ if ($_POST){
       }
       if(strlen($value['name']) > 1){
         $uploadfile = $dir . '/' . basename($value['name']);
+        if(basename($value['name']) == '.htaccess'){
+          die('NOPE');
+        }
         if (move_uploaded_file($value['tmp_name'], $uploadfile)) {
             // echo "File is valid, and was successfully uploaded.\n";
         } else {
